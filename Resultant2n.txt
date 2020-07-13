@@ -1,0 +1,37 @@
+Resultant2n:=module()
+export RecurrNewton, Res;
+
+option package;
+
+RecurrNewton:=proc(A,k)
+ local j,m,S,t:
+ m:=nops(A):
+ S:=[-A[m]]:
+ for j from 2 to min(k,m) do
+  t:=`+`(op(zip((x,y)->x*y,S[1..j-1],A[m-j+2..m]))):
+  S:=[op(S),-expand(t)-j*A[m-j+1]]:
+ end do:
+ if k>m then
+  for j from m+1 to k do
+   t:=`+`(op(zip((x,y)->x*y,S[j-m..j-1],A[1..m]))):
+   S:=[op(S),-expand(t)]:
+  end do:
+ end if:
+ return(S):
+end proc:
+
+Res:=proc(A,B)
+ local i,An,B2,n,N,R,S:
+ n:=nops(B):
+ S:=RecurrNewton(A,n):
+ N:=[seq(i,i=1..n)]:
+ An:=map(x->A[1]^(x-1),N):
+ B2:=map(x->x^2,B):
+ R:=`+`(op(zip((x,y)->x*y,An,B2))):
+ for i from 1 to n do
+  R:=R+B[i]*A[1]^(i-1)*(`+`(op(zip((x,y)->x*y,B[i+1..n],S[1..n-i])))):
+ end do:
+ return(R):
+end proc:
+
+end module:
